@@ -373,7 +373,6 @@ public class MiReproductorApp extends JFrame {
             btn.addActionListener(e -> mostrarVistaPlaylist(p));
             
             panelMisPlaylists.add(btn);
-            // Espacio entre botones
             panelMisPlaylists.add(Box.createRigidArea(new Dimension(0, 5)));
         }
         panelMisPlaylists.revalidate();
@@ -382,6 +381,8 @@ public class MiReproductorApp extends JFrame {
 
     private void mostrarVistaBuscar() {
         panelContenidoCentral.removeAll();
+        panelContenidoCentral.setLayout(new BorderLayout());
+
         JPanel panelBusqueda = new JPanel();
         panelBusqueda.setBackground(COLOR_FONDO);
         panelBusqueda.setPreferredSize(new Dimension(800, 60));
@@ -389,44 +390,57 @@ public class MiReproductorApp extends JFrame {
         JTextField txtBuscar = new JTextField(20);
         JButton btnBuscar = new JButton("Buscar");
         
-        btnBuscar.addActionListener(e -> {
-            String termino = txtBuscar.getText().toLowerCase();
-            
-            java.util.List<Cancion> resultadosBusqueda = new java.util.ArrayList<>();
-            
-            for (Cancion c : todasLasCanciones) {
-                if (c.getTitulo().toLowerCase().contains(termino) || 
-                    c.getArtista().toLowerCase().contains(termino)) {
-                    resultadosBusqueda.add(c);
-                }
-            }
-            panelContenidoCentral.removeAll();
-            panelContenidoCentral.add(panelBusqueda); 
-
-            if (resultadosBusqueda.isEmpty()) {
-                JLabel lblNo = new JLabel("No se encontraron coincidencias.");
-                lblNo.setForeground(Color.GRAY);
-                lblNo.setFont(FUENTE_TEXTO.deriveFont(Font.PLAIN, 16));
-                panelContenidoCentral.add(lblNo);
-            } else {
-                for (int i = 0; i < resultadosBusqueda.size(); i++) {
-                    Cancion c = resultadosBusqueda.get(i);
-                    
-                    panelContenidoCentral.add(crearTarjetaCancion(c, i, resultadosBusqueda));
-                }
-            }
-            
-
-            int filas = (int) Math.ceil((double) resultadosBusqueda.size() / 4);
-            int altura = (filas * 260) + 100;
-            panelContenidoCentral.setPreferredSize(new Dimension(800, Math.max(altura, 600)));
-
-            refrescarPanel();
-        });
+        txtBuscar.setFont(new Font("Segoe UI Symbol", Font.PLAIN, 14));
+        btnBuscar.setFont(new Font("Segoe UI Symbol", Font.BOLD, 14));
+        btnBuscar.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         panelBusqueda.add(txtBuscar);
         panelBusqueda.add(btnBuscar);
-        panelContenidoCentral.add(panelBusqueda);
+        
+        panelContenidoCentral.add(panelBusqueda, BorderLayout.NORTH);
+
+        JPanel panelResultados = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 20));
+        panelResultados.setBackground(COLOR_FONDO);
+
+        panelContenidoCentral.add(panelResultados, BorderLayout.CENTER);
+
+        btnBuscar.addActionListener(e -> {
+            String termino = txtBuscar.getText().toLowerCase();
+            
+            panelResultados.removeAll();
+
+            java.util.List<Cancion> resultadosBusqueda = new java.util.ArrayList<>();
+            
+            if (todasLasCanciones != null) {
+                for (Cancion c : todasLasCanciones) {
+                    if (c.getTitulo().toLowerCase().contains(termino) || 
+                        c.getArtista().toLowerCase().contains(termino)) {
+                        resultadosBusqueda.add(c);
+                    }
+                }
+            }
+
+            if (resultadosBusqueda.isEmpty()) {
+                JLabel lblNo = new JLabel("No se encontraron coincidencias para: " + termino);
+                lblNo.setForeground(Color.GRAY);
+                lblNo.setFont(new Font("Segoe UI Symbol", Font.PLAIN, 16));
+                panelResultados.add(lblNo);
+                
+                panelResultados.setPreferredSize(null); 
+            } else {
+                for (int i = 0; i < resultadosBusqueda.size(); i++) {
+                    Cancion c = resultadosBusqueda.get(i);
+                    panelResultados.add(crearTarjetaCancion(c, i, resultadosBusqueda));
+                }
+                
+                int filas = (int) Math.ceil((double) resultadosBusqueda.size() / 4);
+                int altura = (filas * 260) + 50;
+                panelResultados.setPreferredSize(new Dimension(800, altura));
+            }
+
+            panelResultados.revalidate();
+            panelResultados.repaint();
+        });
         
         refrescarPanel();
     }
@@ -480,25 +494,29 @@ public class MiReproductorApp extends JFrame {
 
     private void mostrarVistaPlaylist(Playlist p) {
         panelContenidoCentral.removeAll();
-
-        JLabel titulo = new JLabel("Playlist: " + p.getNombre());
-        titulo.setFont(new Font("Arial", Font.BOLD, 14));
-        titulo.setForeground(COLOR_TEXTO);
-
-        JButton btnAgregar = new JButton("+ Agregar Canción");
-        btnAgregar.setFont(new Font("Arial", Font.BOLD, 14));
-        btnAgregar.setBackground(COLOR_ENFASIS);
-        btnAgregar.setForeground(Color.BLACK);
-        btnAgregar.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        
-        btnAgregar.addActionListener(e -> agregarCancionAPlaylistUI(p));
+        panelContenidoCentral.setLayout(new BorderLayout());
 
         JPanel header = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 10));
         header.setBackground(COLOR_FONDO);
-        header.add(titulo);
-        header.add(btnAgregar);
+        header.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.DARK_GRAY)); 
 
-        panelContenidoCentral.add(header);
+        JLabel titulo = new JLabel("Playlist: " + p.getNombre());
+        titulo.setFont(new Font("Segoe UI Symbol", Font.BOLD, 24));
+        titulo.setForeground(COLOR_TEXTO);
+
+        JButton btnAnadir = new JButton("Añadir Canción");
+        btnAnadir.setFont(new Font("Segoe UI Symbol", Font.BOLD, 14));
+        btnAnadir.setBackground(COLOR_ENFASIS); 
+        btnAnadir.setForeground(Color.BLACK);
+        btnAnadir.setFocusPainted(false);
+        btnAnadir.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        
+        btnAnadir.addActionListener(e -> agregarCancionAPlaylistUI(p));
+
+        header.add(titulo);
+        header.add(btnAnadir);
+
+        panelContenidoCentral.add(header, BorderLayout.NORTH);
 
         JPanel gridCanciones = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 20));
         gridCanciones.setBackground(COLOR_FONDO);
@@ -506,11 +524,16 @@ public class MiReproductorApp extends JFrame {
         java.util.List<Cancion> cancionesDeEstaPlaylist = controlador.obtenerCancionesDePlaylist(p.getId_playlist());
 
         if (cancionesDeEstaPlaylist.isEmpty()) {
-            JLabel lblVacio = new JLabel("Esta playlist está vacía, Usa el botón verde para agregar música.");
+            JLabel lblVacio = new JLabel("Esta playlist está vacía, presiona el botón verde de arriba para comenzar.", SwingConstants.CENTER);
             lblVacio.setForeground(Color.GRAY);
-            lblVacio.setFont(new Font("Segoe UI Symbol", Font.PLAIN, 16));
-            lblVacio.setBorder(new EmptyBorder(20, 20, 20, 20));
-            gridCanciones.add(lblVacio);
+            lblVacio.setFont(new Font("Segoe UI Symbol", Font.PLAIN, 18));
+            
+            JPanel panelMensaje = new JPanel(new GridBagLayout());
+            panelMensaje.setBackground(COLOR_FONDO);
+            panelMensaje.add(lblVacio);
+            
+            panelContenidoCentral.add(panelMensaje, BorderLayout.CENTER);
+            
         } else {
             for (int i = 0; i < cancionesDeEstaPlaylist.size(); i++) {
                 gridCanciones.add(crearTarjetaCancion(cancionesDeEstaPlaylist.get(i), i, cancionesDeEstaPlaylist));
@@ -519,9 +542,10 @@ public class MiReproductorApp extends JFrame {
             int filas = (int) Math.ceil((double) cancionesDeEstaPlaylist.size() / 4);
             int altura = (filas * 260) + 100;
             gridCanciones.setPreferredSize(new Dimension(800, altura));
+            
+            panelContenidoCentral.add(gridCanciones, BorderLayout.CENTER);
         }
 
-        panelContenidoCentral.add(gridCanciones);
         refrescarPanel();
         
         if (!cancionesDeEstaPlaylist.isEmpty()) {

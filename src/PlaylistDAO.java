@@ -94,8 +94,8 @@ public class PlaylistDAO {
                         rs.getString("artista"),
                         rs.getString("album"),
                         rs.getString("genero"),
-                        rs.getInt("duracion"), 
-                        rs.getString("ruta")   
+                        rs.getInt("duracion_segundos"), 
+                        rs.getString("ruta_archivo")   
                     );
                     canciones.add(cancion);
                 }
