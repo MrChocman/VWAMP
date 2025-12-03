@@ -20,13 +20,5 @@ public class ConexionDB {
         return DriverManager.getConnection(JDBC_URL, USER, PASSWORD);
     }
 
-    public static void main(String[] args) {
-        System.out.println("Intentando conexión de prueba...");
-        try (Connection conn = getConnection()) {
-            System.out.println("¡Prueba de conexión exitosa!");
-        } catch (SQLException e) {
-            System.err.println("Prueba de conexión fallida.");
-            e.printStackTrace();
-        }
-    }
+
 }

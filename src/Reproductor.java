@@ -25,14 +25,14 @@ public class Reproductor {
         try {
             Media media;
             if (ruta.startsWith("http")) {
-                media = new Media(ruta); // Para URLs (Google Drive)
+                media = new Media(ruta); 
             } else {
-                media = new Media(new File(ruta).toURI().toString()); // Para archivos locales
+                media = new Media(new File(ruta).toURI().toString()); 
             }
 
             mediaPlayer = new MediaPlayer(media);
 
-            // Reconectar el visualizador si existe
+
             if (visualizadorListener != null) {
                 configurarVisualizadorInterno();
             }

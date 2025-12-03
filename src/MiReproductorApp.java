@@ -24,7 +24,7 @@ public class MiReproductorApp extends JFrame {
     private VisualizadorAudio visualizador;
 
     public MiReproductorApp() {
-        setTitle("Mi Reproductor - Java Swing");
+        setTitle("VWAMP MP3");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1000, 700);
         setMinimumSize(new Dimension(800, 600));
@@ -86,7 +86,7 @@ public class MiReproductorApp extends JFrame {
         
 
 
-        JLabel lblTitulo = new JLabel("Mi Reproductor");
+        JLabel lblTitulo = new JLabel("VWAMP PLAYER");
         lblTitulo.setFont(new Font("Arial", Font.BOLD, 28));
         lblTitulo.setForeground(COLOR_ENFASIS);
         lblTitulo.setAlignmentX(Component.LEFT_ALIGNMENT);

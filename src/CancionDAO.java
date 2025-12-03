@@ -32,7 +32,7 @@ public class CancionDAO {
         return canc;
     }
 
-    public void insertarCancion(Cancion cancion){ //modificar a bool?
+    public void insertarCancion(Cancion cancion){ 
         String sqlq = "INSERT INTO CANCIONES (titulo, artista, album, genero, duracion_segundos, ruta_archivo)" + "VALUES (?,?,?,?,?,?)";
         try (Connection conn = ConexionDB.getConnection();
             PreparedStatement pstmt = conn.prepareStatement(sqlq)) {
@@ -49,7 +49,7 @@ public class CancionDAO {
         }
     }
 
-    public void eliminarCancion(int id_cancion){ //bool??
+    public void eliminarCancion(int id_cancion){ 
         String sqlq = "DELETE FROM CANCIONES WHERE id_cancion = ?";
         try (Connection conn = ConexionDB.getConnection();
             PreparedStatement pstmt = conn.prepareStatement(sqlq)) {
